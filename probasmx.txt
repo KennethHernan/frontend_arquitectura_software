@@ -1,0 +1,32 @@
+function listarEstudiantes() {
+  fetch("http://localhost:62882/wsfab.asmx/ListarAlumnos", {
+    method: "POST",
+    mode: "cors",
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(data, "application/xml");
+      const alumnos = xml.getElementsByTagName("Alumno");
+
+      for (let i = 0; i < alumnos.length; i++) {
+        const alumno = alumnos[i];
+        const nombres = alumno.getElementsByTagName("nombres")[0].textContent;
+        const apellidos =
+          alumno.getElementsByTagName("apellidos")[0].textContent;
+        const codigoalumno =
+          alumno.getElementsByTagName("codigoalumno")[0].textContent;
+        const estado = alumno.getElementsByTagName("estado")[0].textContent;
+
+        resultadoAlumnos.push({
+          nombres: nombres,
+          apellidos: apellidos,
+          codigoalumno: codigoalumno,
+          estado: estado,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error al consumir la API:", error);
+    });
+}
