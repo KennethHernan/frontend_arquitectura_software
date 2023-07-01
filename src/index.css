@@ -1,0 +1,16 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+   /**============= COLORES ===================*/ 
+   --color-base: #000000;
+   --color-secundario: #ffffff;
+   --color-category: #08090b;
+ 
+   --color-letra-home: #bbbbbb;
+   --color-letra-secundario: #ffffff;
+ 
+   --color-seleccionar-header: #454545;
+ 
+   --color-modal-black: #1d2026;
+}
+
