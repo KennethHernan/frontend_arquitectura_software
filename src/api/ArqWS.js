@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const ArqWS = axios.create({
-  baseURL: '',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: 'http://localhost:52528/WebService1.asmx',
 });
 
 export default ArqWS;

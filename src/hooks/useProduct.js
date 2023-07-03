@@ -1,4 +1,5 @@
 import ArqRest from '../api/ArqRest';
+import ArqWS from '../api/ArqWS';
 
 export const useProduct = () => {
   const getProducts = async () => {
@@ -19,8 +20,14 @@ export const useProduct = () => {
     }
   };
 
-  // Agregar productos es WS
-  // Login es WS
+  const addProduct = async (formData) => {
+    const response = await ArqWS.post('/AddProduct', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data;
+  };
 
   const getCategories = async () => {
     try {
@@ -58,5 +65,5 @@ export const useProduct = () => {
     }
   };
 
-  return { getProducts, getCategories, addCategory, getSuppliers, addSupplier, updateProduct };
+  return { addProduct, getProducts, getCategories, addCategory, getSuppliers, addSupplier, updateProduct };
 };

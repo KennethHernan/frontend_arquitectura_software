@@ -14,13 +14,11 @@ function Product() {
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [productSelected, setProductSelected] = useState(null);
-  const { getProducts, getCategories, getSuppliers, updateProduct } = useProduct();
+  const [messageResponse, setMessageResponse] = useState('');
+  const [isError, setIsError] = useState(false);
+  const { getProducts, getCategories, getSuppliers, updateProduct, addProduct } = useProduct();
 
-  const {
-    handleSubmit,
-    register,
-    // formState: { errors },
-  } = useForm();
+  const { handleSubmit, register } = useForm();
 
   useEffect(() => {
     getAllProducts();
@@ -43,8 +41,26 @@ function Product() {
     setSuppliers(suppliersF);
   };
 
-  const onSubmitAddProduct = (data) => {
-    console.log(data);
+  const onSubmitAddProduct = async (data) => {
+    const formData = new URLSearchParams();
+    formData.append('name', data.name);
+    formData.append('price', data.price);
+    formData.append('category', data.category);
+    formData.append('description', data.description);
+    formData.append('stock', data.stock);
+    formData.append('supplier', data.supplier);
+    const response = await addProduct(formData);
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(response, 'application/xml');
+    setMessageResponse(xml.getElementsByTagName('message')[0].textContent);
+    setIsError(xml.getElementsByTagName('isError')[0].textContent);
+
+    if (isError == 'true') {
+      return setMessageResponse(xml.getElementsByTagName('message')[0].textContent);
+    }
+
+    setMessageResponse(xml.getElementsByTagName('message')[0].textContent);
   };
 
   const onSubmitUpdateProduct = async (data) => {
@@ -166,7 +182,7 @@ function Product() {
                       <p className={styles.txtSubtilte}>Precio Producto:</p>
                       <input type="number" required {...register('price')} />
                       <p className={styles.txtSubtilte}>Categoría Producto:</p>
-                      <select {...register('category')} defaultValue="">
+                      <select {...register('category')} defaultValue=""  className={styles.spinner}>
                         <option disabled value={''}>
                           Seleccione Categoria
                         </option>
@@ -177,7 +193,6 @@ function Product() {
                             </option>
                           ))}
                       </select>
-                      {/* <input type="text" required {...register('name')} /> */}
                     </div>
                     <div className={styles.form_head_input_columna}>
                       <p className={styles.txtSubtilte}>Descripción Producto:</p>
@@ -185,7 +200,7 @@ function Product() {
                       <p className={styles.txtSubtilte}>Stock Producto:</p>
                       <input type="number" required {...register('stock')} />
                       <p className={styles.txtSubtilte}>Proveedor Producto:</p>
-                      <select {...register('supplier')} defaultValue="">
+                      <select {...register('supplier')} defaultValue="" className={styles.spinner}>
                         <option disabled value={''}>
                           Seleccione Proveedor
                         </option>
@@ -196,7 +211,6 @@ function Product() {
                             </option>
                           ))}
                       </select>
-                      {/* <input type="text" required /> */}
                     </div>
                   </div>
                   <button
@@ -311,6 +325,19 @@ function Product() {
           </div>
         )}
       </div>
+
+      {isError && (
+        <div
+          className={styles.modal}
+          onClick={() => {
+            setIsError(false);
+          }}
+        >
+          <div className={styles.modal_content} onClick={(e) => e.stopPropagation()}>
+            <h1>{messageResponse}</h1>
+          </div>
+        </div>
+      )}
     </>
   );
 }
