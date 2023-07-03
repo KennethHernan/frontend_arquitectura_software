@@ -11,6 +11,7 @@ function Proveedor() {
   const [showProductAgregar, setShowProductAgregar] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
   const { getSuppliers, addSupplier } = useProduct();
+  const [searchName, setSearchName] = useState("");
 
   const {
     handleSubmit,
@@ -23,9 +24,22 @@ function Proveedor() {
     getAllSupplier();
   }, [suppliers]);
 
+  useEffect(() => {
+    getAllSupplier();
+  }, [searchName]);
+
+  //Buscador por name
   const getAllSupplier = async () => {
     const response = await getSuppliers();
-    setSuppliers(response);
+
+    if (searchName === "") {
+      setSuppliers(response);
+    } else {
+      const filteredSuppliers = response.filter((supplier) =>
+        supplier.name.toLowerCase().includes(searchName.toLowerCase())
+      );
+      setSuppliers(filteredSuppliers);
+    }
   };
 
   const onSubmitAddSupplier = async (data) => {
@@ -50,9 +64,16 @@ function Proveedor() {
             </div>
             <div className={styles.form_head_input_main}>
               <p className={styles.txtSubtilte}>Nombre Proveedor:</p>
-              <form action="">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                getAllSupplier();
+              }}>
                 <div className={styles.form_head_input}>
-                  <input type="text" required />
+                  <input
+                    type="text"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                  />
                   <button className={styles.btn_main} type="submit">
                     Buscar
                   </button>
@@ -135,9 +156,9 @@ function Proveedor() {
                   <button
                     className={styles.btn_main}
                     type="submit"
-                    // onClick={() => {
-                    //   setShowProductAgregar(false);
-                    // }}
+                  // onClick={() => {
+                  //   setShowProductAgregar(false);
+                  // }}
                   >
                     Agregar Proveedor
                   </button>

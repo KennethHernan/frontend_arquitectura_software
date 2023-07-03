@@ -63,12 +63,26 @@ function Product() {
     setMessageResponse(xml.getElementsByTagName('message')[0].textContent);
   };
 
+  // const onSubmitUpdateProduct = async (data) => {
+  //   const productUpdate = {
+  //     name: data.name,
+  //     description: data.description,
+  //     price: data.price,
+  //     stock: data.stock,
+  //   };
+  //   const productUpdated = await updateProduct(productSelected.id, productUpdate);
+  //   setProducts(products.map((product) => (product.id === productUpdated.id ? productUpdated : product)));
+  //   setShowProductActualizar(false);
+  // };
+
   const onSubmitUpdateProduct = async (data) => {
     const productUpdate = {
       name: data.name,
       description: data.description,
       price: data.price,
       stock: data.stock,
+      category: { id: data.category },
+      supplier: { id: data.supplier },
     };
     const productUpdated = await updateProduct(productSelected.id, productUpdate);
     setProducts(products.map((product) => (product.id === productUpdated.id ? productUpdated : product)));
@@ -216,9 +230,9 @@ function Product() {
                   <button
                     className={styles.btn_main}
                     type="submit"
-                    onClick={() => {
-                      setShowProductAgregar(false);
-                    }}
+                    // onClick={() => {
+                    //   setShowProductAgregar(false);
+                    // }}
                   >
                     Agregar Producto
                   </button>
@@ -268,7 +282,7 @@ function Product() {
                       <p className={styles.txtSubtilte}>Precio Producto:</p>
                       <input type="number" required {...register('price')} defaultValue={productSelected.price} />
                       <p className={styles.txtSubtilte}>Categoría Producto:</p>
-                      <select {...register('category')} defaultValue={productSelected.category.id}>
+                      <select {...register('category')} className={styles.spinner} defaultValue={productSelected.category.id}>
                         <option disabled value={''}>
                           Seleccione Categoria
                         </option>
@@ -279,7 +293,6 @@ function Product() {
                             </option>
                           ))}
                       </select>
-                      {/* <input type="text" required /> */}
                     </div>
                     <div className={styles.form_head_input_columna}>
                       <p className={styles.txtSubtilte}>Descripción Producto:</p>
@@ -292,7 +305,7 @@ function Product() {
                       <p className={styles.txtSubtilte}>Stock Producto:</p>
                       <input type="number" required {...register('stock')} defaultValue={productSelected.stock} />
                       <p className={styles.txtSubtilte}>Proveedor Producto:</p>
-                      <select {...register('supplier')} defaultValue={productSelected.supplier.id}>
+                      <select {...register('supplier')} className={styles.spinner} defaultValue={productSelected.supplier.id}>
                         <option disabled value={''}>
                           Seleccione Proveedor
                         </option>
@@ -303,7 +316,6 @@ function Product() {
                             </option>
                           ))}
                       </select>
-                      {/* <input type="text" required /> */}
                     </div>
                   </div>
                   <button className={styles.btn_main} type="submit">

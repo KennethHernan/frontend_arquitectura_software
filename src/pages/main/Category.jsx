@@ -11,6 +11,7 @@ function Category() {
   const [showProductAgregar, setShowProductAgregar] = useState(false);
   const [categories, setCategories] = useState([]);
   const { getCategories, addCategory } = useProduct();
+  const [searchName, setSearchName] = useState("");
 
   const {
     handleSubmit,
@@ -23,9 +24,21 @@ function Category() {
     getAllCategories();
   }, [categories]);
 
+  useEffect(() => {
+    getAllCategories();
+  }, [searchName]);
+
+  //Buscador por name
   const getAllCategories = async () => {
     const response = await getCategories();
-    setCategories(response);
+    if (searchName === "") {
+      setCategories(response);
+    } else {
+      const filteredCategory = response.filter((category) =>
+        category.name.toLowerCase().includes(searchName.toLowerCase())
+      );
+      setCategories(filteredCategory);
+    }
   };
 
   const onSubmitAddCategory = async (data) => {
@@ -50,9 +63,16 @@ function Category() {
             </div>
             <div className={styles.form_head_input_main}>
               <p className={styles.txtSubtilte}>Nombre Categoría:</p>
-              <form action="">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                getAllCategories();
+              }}>
                 <div className={styles.form_head_input}>
-                  <input type="text" required />
+                  <input
+                    type="text"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                  />
                   <button className={styles.btn_main} type="submit">
                     Buscar
                   </button>
@@ -127,9 +147,9 @@ function Category() {
                   <button
                     className={styles.btn_main}
                     type="submit"
-                    // onClick={() => {
-                    //   setShowProductAgregar(false);
-                    // }}
+                  // onClick={() => {
+                  //   setShowProductAgregar(false);
+                  // }}
                   >
                     Agregar Categoría
                   </button>
